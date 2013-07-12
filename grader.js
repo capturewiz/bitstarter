@@ -27,8 +27,6 @@ var cheerio = require('cheerio');
 var rest = require('restler');
 var util = require('util');
 
-var HTMLFILE_DEFAULT = "index.html";
-var HTMLURL_DEFAULT = "http://obscure-ridge-7482.herokuapp.com";
 var CHECKSFILE_DEFAULT = "checks.json";
 
 var assertFileExists = function(infile) {
@@ -54,7 +52,7 @@ var loadChecks = function(checksfile) {
 
 var checkHtmlFile = function(aHtmlfile, aChecksfile, aHtmlurl) {
     console.error('aHtmlfile=' + aHtmlfile + ', aChecksfile=' + aChecksfile + ', aHtmlurl=' + aHtmlurl);
-    if (true) {
+    if (aHtmlfile === '') {
 	rest.get(aHtmlurl).on(
 	    'complete', 
 	    handleRestResponse(aChecksfile)
@@ -79,7 +77,7 @@ var handleRestResponse = function(aChecksfile) {
 };
 
 var handleHtmlString = function(aHtmlstring, aChecksfile) {
-    console.error("aHtmlstring=" + aHtmlstring + ", aChecksfile=" + aChecksfile);
+//    console.error("aHtmlstring=" + aHtmlstring + ", aChecksfile=" + aChecksfile);
     $ = cheerioHtmlFile(aHtmlstring);
 
     var checks = loadChecks(aChecksfile).sort();
@@ -102,8 +100,8 @@ var clone = function(fn) {
 
 if(require.main == module) {
     program
-        .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
-        .option('-u, --url <html_url>', 'Url to index.html', clone(assertValidUrl), HTMLURL_DEFAULT)
+        .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), '')
+        .option('-u, --url <html_url>', 'Url to index.html', clone(assertValidUrl), '')
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
         .parse(process.argv);
     checkHtmlFile(program.file, program.checks, program.url);
